@@ -38,13 +38,15 @@ class App extends Component {
     event.preventDefault()
     const {name, mobileNo} = this.state
     const newContact = {
-      id: uuiv4(),
+      id: uuidv4(),
       name,
       mobileNo,
       isFavorite: false,
     }
     this.setState(prevState => ({
       contactsList: [...prevState.contactsList, newContact],
+      name: '',
+      mobileNo: '',
     }))
   }
 
@@ -54,6 +56,17 @@ class App extends Component {
 
   onChangeName = event => {
     this.setState({name: event.target.value})
+  }
+
+  toggleIsFavorite = id => {
+    this.setState(prevState => ({
+      contactsList: prevState.contactsList.map(eachContact => {
+        if (id === eachContact.id) {
+          return {...eachContact, isFavorite: !eachContact.isFavorite}
+        }
+        return eachContact
+      }),
+    }))
   }
 
   render() {
@@ -86,7 +99,11 @@ class App extends Component {
               <p className="table-header-cell">Mobile Number</p>
             </li>
             {contactsList.map(eachContact => (
-              <ContactItem key={eachContact.id} contactDetails={eachContact} />
+              <ContactItem
+                key={eachContact.id}
+                contactDetails={eachContact}
+                toggleIsFavorite={this.toggleIsFavorite}
+              />
             ))}
           </ul>
         </div>
